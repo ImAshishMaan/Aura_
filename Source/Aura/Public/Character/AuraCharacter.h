@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
+#include "Player/AuraPlayerState.h"
 #include "AuraCharacter.generated.h"
 
 /**
@@ -14,8 +15,12 @@ class AURA_API AAuraCharacter : public AAuraCharacterBase {
 public:
 	AAuraCharacter();
 
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
+
 protected:
 
 private:
+	void InitAbilityActorInfo();
 	
 };
