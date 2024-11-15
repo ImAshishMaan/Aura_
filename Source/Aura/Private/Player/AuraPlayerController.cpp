@@ -1,6 +1,9 @@
 #include "Player/AuraPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Engine/HitResult.h"
+#include "Engine/LocalPlayer.h"
+#include "GameFramework/Pawn.h"
 #include "Interaction/EnemyInterface.h"
 
 AAuraPlayerController::AAuraPlayerController() {
@@ -17,8 +20,8 @@ void AAuraPlayerController::BeginPlay() {
 
 	check(AuraContext)
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	check(Subsystem)
-	Subsystem->AddMappingContext(AuraContext, 1);
+	if(Subsystem)
+		Subsystem->AddMappingContext(AuraContext, 1);
 
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
