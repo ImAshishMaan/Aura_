@@ -20,10 +20,10 @@ public:
 
 protected:
 
-	UPROPERTY(VisibleAnywhere, Category = "Component")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
-	UPROPERTY(VisibleAnywhere, Category = "Component")
+	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
 	
 };
