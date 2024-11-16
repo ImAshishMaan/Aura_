@@ -20,6 +20,10 @@ public:
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
 	//~ End IEnemyInterface
+
+protected:
+
+	virtual void InitAbilityActorInfo() override;
 	
 
 };
