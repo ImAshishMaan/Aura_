@@ -1,4 +1,5 @@
 #include "Character/AuraCharacterBase.h"
+#include "AbilitySystemComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 
 AAuraCharacterBase::AAuraCharacterBase() {
@@ -18,3 +19,12 @@ void AAuraCharacterBase::BeginPlay() {
 }
 
 void AAuraCharacterBase::InitAbilityActorInfo() {}
+
+void AAuraCharacterBase::InitializePrimaryAttributes() const {
+
+	check(IsValid(GetAbilitySystemComponent()));
+	check(DefaultPrimaryAttribute);
+	const FGameplayEffectContextHandle EffectContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+	const FGameplayEffectSpecHandle EffectSpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(DefaultPrimaryAttribute, 1.0f, EffectContextHandle);
+	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*EffectSpecHandle.Data.Get(), GetAbilitySystemComponent());
+}
