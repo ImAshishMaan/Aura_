@@ -21,9 +21,16 @@ public:
 	virtual void UnHighlightActor() override;
 	//~ End IEnemyInterface
 
+	//~ Begin ICombatInterface
+	virtual int32 GetPlayerLevel() override;
+	//~ End ICombatInterface
+
 protected:
 
 	virtual void InitAbilityActorInfo() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defailts")
+	int32 Level = 1;
 	
 
 };
