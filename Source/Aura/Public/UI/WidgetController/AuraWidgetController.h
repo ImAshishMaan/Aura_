@@ -38,8 +38,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetWidgetControllerParams(FWidgetControllerParams WCParams);
 
+	UFUNCTION(BlueprintCallable)
 	virtual void BroadcastInitialValues();
-
 	virtual void BindCallbacksToDependencies();
 
 protected:
