@@ -10,6 +10,7 @@ class IEnemyInterface;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
+class UAuraAbilitySystemComponent;
 
 UCLASS()
 class AURA_API AAuraPlayerController : public APlayerController {
@@ -42,5 +43,10 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UAuraInputConfig> InputConfig; // Data asset
+
+	UPROPERTY()
+	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
+
+	UAuraAbilitySystemComponent* GetASC();
 	
 };
