@@ -3,11 +3,11 @@
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 
 void UAuraAbilitySystemComponent::AbilityActorInfoSet() {
-	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::EffectApplied);
+	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::ClientEffectApplied);
 }
 
-void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle) {
-	//GEngine->AddOnScreenDebugMessage(1, 8.f, FColor::Blue, FString("Effect Applied!"));
+void UAuraAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent,
+                                                                     const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle) {
 
 	FGameplayTagContainer TagContainer;
 	EffectSpec.GetAllAssetTags(TagContainer);
@@ -29,7 +29,7 @@ void UAuraAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputT
 
 	for(FGameplayAbilitySpec& AbilitySpec: GetActivatableAbilities()) {
 		if(AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag)) {
-			AbilitySpecInputPressed(AbilitySpec); 
+			AbilitySpecInputPressed(AbilitySpec);
 			if(!AbilitySpec.IsActive()) {
 				TryActivateAbility(AbilitySpec.Handle);
 			}
@@ -42,7 +42,7 @@ void UAuraAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& In
 
 	for(FGameplayAbilitySpec& AbilitySpec: GetActivatableAbilities()) {
 		if(AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag)) {
-			AbilitySpecInputReleased(AbilitySpec); 
+			AbilitySpecInputReleased(AbilitySpec);
 		}
 	}
 }
