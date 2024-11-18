@@ -1,5 +1,6 @@
 #include "Character/AuraCharacterBase.h"
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 
 AAuraCharacterBase::AAuraCharacterBase() {
@@ -33,6 +34,14 @@ void AAuraCharacterBase::InitializeDefaultAttributes() const {
 	ApplyEffectToSelf(DefaultPrimaryAttribute, 1.f);
 	ApplyEffectToSelf(DefaultSecondaryAttribute, 1.f);
 	ApplyEffectToSelf(DefaultVitalAttribute, 1.f);
+}
+
+void AAuraCharacterBase::AddCharacterAbilities() const {
+	if(!HasAuthority()) return;
+	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(GetAbilitySystemComponent());
+
+	AuraASC->AddCharacterAbilities(StartupAbilities);
+	
 }
 
 
