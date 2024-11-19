@@ -24,6 +24,8 @@ void AAuraCharacterBase::BeginPlay() {
 }
 
 FVector AAuraCharacterBase::GetCombatSocketLocation() {
+	ICombatInterface::GetCombatSocketLocation();
+
 	check(Weapon);
 	return Weapon->GetSocketLocation(WeaponTipSocketName);
 }
@@ -50,7 +52,4 @@ void AAuraCharacterBase::AddCharacterAbilities() const {
 	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(GetAbilitySystemComponent());
 
 	AuraASC->AddCharacterAbilities(StartupAbilities);
-	
 }
-
-
