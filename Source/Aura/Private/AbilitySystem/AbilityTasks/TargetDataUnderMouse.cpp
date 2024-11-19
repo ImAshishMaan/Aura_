@@ -1,13 +1,13 @@
 #include "AbilitySystem/AbilityTasks/TargetDataUnderMouse.h"
 #include "AbilitySystemComponent.h"
 
-// Creates an instance of the TargetDataUnderMouse ability task
+// Creating a instance like this so we can bind this instance to a specific ability task
 UTargetDataUnderMouse* UTargetDataUnderMouse::CreateTargetDataUnderMouse(UGameplayAbility* OwningAbility) {
 	UTargetDataUnderMouse* MyObj = NewAbilityTask<UTargetDataUnderMouse>(OwningAbility);
 	return MyObj;
 }
 
-// Activates the ability task and handles input from mouse cursor or waits for data on the server
+// This get called when instance is created with CreateTargetDataUnderMouse and data is sent to the server for replication
 void UTargetDataUnderMouse::Activate() {
 	const bool bIsLocallyControlled = Ability->GetCurrentActorInfo()->IsLocallyControlled();
 	if(bIsLocallyControlled) {
@@ -15,13 +15,15 @@ void UTargetDataUnderMouse::Activate() {
 		SendMouseCursorData();
 	} else {
 		// We are on the server, so set up to listen for target data from the client
-		const FGameplayAbilitySpecHandle SpecHandle = GetAbilitySpecHandle();
+		const FGameplayAbilitySpecHandle SpecHandle = GetAbilitySpecHandle(); // Get current ability spec handle
 		const FPredictionKey ActivationPredictionKey = GetActivationPredictionKey(); // Used for synchronizing actions between the client and the server
 
 		// Add a delegate to be called when target data is received
 		AbilitySystemComponent.Get()->AbilityTargetDataSetDelegate(SpecHandle, ActivationPredictionKey).AddUObject(this, &UTargetDataUnderMouse::OnTargetDataReplicatedCallback);
 
 		// Check if target data has already been set and call the delegate if so
+		// Server already have spec handle and prediction key for all the abilities we just need to check do we have mouse data for a particular ability
+		// if not we need to wait for it to arrive from the client and then call the delegate on the server again
 		const bool bCalledDelegate = AbilitySystemComponent.Get()->CallReplicatedTargetDataDelegatesIfSet(SpecHandle, ActivationPredictionKey);
 		if(!bCalledDelegate) {
 			// If target data is not available, set up to wait for remote player data
