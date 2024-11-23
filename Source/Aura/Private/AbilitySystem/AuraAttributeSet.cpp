@@ -5,7 +5,9 @@
 #include "AbilitySystemComponent.h"
 #include "AuraGameplayTags.h"
 #include "Interaction/CombatInterface.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "Player/AuraPlayerController.h"
 
 UAuraAttributeSet::UAuraAttributeSet() {
 	const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
@@ -166,11 +168,20 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
 				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer); // Try to activate hit react abilities with the tag 
 			}
+			ShowFloatingText(Props, LocalIncomingDamage);
 		}
 	}
 }
 
-// Collecting post effect data and setting it to the FEffectProperties
+void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage) const {
+	if(Props.SourceCharacter != Props.TargetCharacter) {
+		if(AAuraPlayerController* PC = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0))) {
+			PC->ShowDamageNumber(Damage, Props.TargetCharacter);
+		}
+	}
+}
+
+// Collecting post effect data and setting it to the FEffectProperties .. IMPORTANT
 void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const {
 	// Source = causer of the effect, Target = target of the effect (owner of this AS)
 	Props.EffectContextHandle = Data.EffectSpec.GetContext();
@@ -184,7 +195,7 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 			}
 		}
 		if(Props.SourceController) {
-			ACharacter* SourceCharacter = Cast<ACharacter>(Props.SourceController->GetPawn());
+			Props.SourceCharacter = Cast<ACharacter>(Props.SourceController->GetPawn());
 		}
 	}
 	if(Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid()) {
@@ -194,3 +205,4 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 		Props.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Props.TargetAvatarActor);
 	}
 }
+

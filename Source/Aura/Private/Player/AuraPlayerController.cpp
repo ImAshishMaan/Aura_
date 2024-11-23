@@ -9,9 +9,11 @@
 #include "Components/SplineComponent.h"
 #include "Engine/HitResult.h"
 #include "Engine/LocalPlayer.h"
+#include "GameFramework/Character.h"
 #include "GameFramework/Pawn.h"
 #include "Input/AuraInputComponent.h"
 #include "Interaction/EnemyInterface.h"
+#include "UI/Widget/DamageTextComponent.h"
 
 AAuraPlayerController::AAuraPlayerController() {
 	bReplicates = true;
@@ -24,6 +26,16 @@ void AAuraPlayerController::PlayerTick(float DeltaTime) {
 	CursorTrace();
 
 	AutoRun();
+}
+
+void AAuraPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter) {
+	if(IsValid(TargetCharacter) && DamageTextComponentClass) {
+		UDamageTextComponent* DamageText = NewObject<UDamageTextComponent>(TargetCharacter, DamageTextComponentClass);
+		DamageText->RegisterComponent(); // CreateDefaultSubobject do it for us but we need to call it here
+		DamageText->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform); // So it can spawn on top of the character
+		DamageText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform); // So that it can float on top of the character when it dies
+		DamageText->SetDamageText(DamageAmount);
+	}
 }
 
 void AAuraPlayerController::BeginPlay() {
