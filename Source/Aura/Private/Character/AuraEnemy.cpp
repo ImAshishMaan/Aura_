@@ -87,3 +87,8 @@ void AAuraEnemy::UnHighlightActor() {
 int32 AAuraEnemy::GetPlayerLevel() {
 	return Level;
 }
+
+void AAuraEnemy::Die() {
+	SetLifeSpan(LifeSpawn);
+	Super::Die();
+}

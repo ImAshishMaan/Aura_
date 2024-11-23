@@ -38,7 +38,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
 		// So we can use set by caller magnitude to set the damage .. Damage tag is linked to the ScaledDamage 
 		const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
-		const float ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel()); // get damage from curve table according to level
+		const float ScaledDamage = Damage.GetValueAtLevel(10); // get damage from curve table according to level
 		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameplayTags.Damage, ScaledDamage); 
 		
 		Projectile->DamageEffectSpecHandle = SpecHandle;

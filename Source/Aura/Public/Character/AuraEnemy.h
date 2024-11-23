@@ -26,6 +26,7 @@ public:
 
 	//~ Begin ICombatInterface
 	virtual int32 GetPlayerLevel() override;
+	virtual void Die() override;
 	//~ End ICombatInterface
 
 	UPROPERTY(BlueprintAssignable)
@@ -41,6 +42,9 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Combat")
 	float BaseWalkSpeed = 200.f;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	float LifeSpawn = 5.f;
 	
 protected:
 	virtual void InitAbilityActorInfo() override;

@@ -4,6 +4,7 @@
 #include "Aura/Aura.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "UObject/FastReferenceCollector.h"
 
 AAuraCharacterBase::AAuraCharacterBase() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -25,6 +26,25 @@ UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const {
 
 UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation() {
 	return HitReactMontage;
+}
+
+void AAuraCharacterBase::Die() {
+	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
+	MulticastHandleDeath();
+}
+
+void AAuraCharacterBase::MulticastHandleDeath_Implementation() {
+	Weapon->SetSimulatePhysics(true);
+	Weapon->SetEnableGravity(true);
+	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetEnableGravity(true);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+	
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
 }
 
 void AAuraCharacterBase::BeginPlay() {
