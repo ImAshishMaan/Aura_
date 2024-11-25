@@ -25,8 +25,10 @@ void AAuraEnemy::BeginPlay() {
 	Super::BeginPlay();
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 	InitAbilityActorInfo();
-	
-	UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent); // Give startup abilities to AI like hit react
+
+	if(HasAuthority()) {
+		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+	} // Give startup abilities to AI like hit react
 
 	if(UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthBar->GetUserWidgetObject())) {
 		AuraUserWidget->SetWidgetController(this); // Because widget controller is a UObject so we can do this shit.. :D
@@ -65,7 +67,9 @@ void AAuraEnemy::InitAbilityActorInfo() {
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 
-	InitializeDefaultAttributes();
+	if(HasAuthority()) {
+		InitializeDefaultAttributes();
+	}
 }
 
 void AAuraEnemy::InitializeDefaultAttributes() const {

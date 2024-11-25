@@ -29,7 +29,7 @@ void AAuraPlayerController::PlayerTick(float DeltaTime) {
 }
 
 void AAuraPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit) {
-	if(IsValid(TargetCharacter) && DamageTextComponentClass) {
+	if(IsValid(TargetCharacter) && DamageTextComponentClass && IsLocalController()) { // Only show damage text for local player
 		UDamageTextComponent* DamageText = NewObject<UDamageTextComponent>(TargetCharacter, DamageTextComponentClass);
 		DamageText->RegisterComponent(); // CreateDefaultSubobject do it for us but we need to call it here
 		DamageText->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform); // So it can spawn on top of the character
