@@ -28,13 +28,13 @@ void AAuraPlayerController::PlayerTick(float DeltaTime) {
 	AutoRun();
 }
 
-void AAuraPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter) {
+void AAuraPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit) {
 	if(IsValid(TargetCharacter) && DamageTextComponentClass) {
 		UDamageTextComponent* DamageText = NewObject<UDamageTextComponent>(TargetCharacter, DamageTextComponentClass);
 		DamageText->RegisterComponent(); // CreateDefaultSubobject do it for us but we need to call it here
 		DamageText->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform); // So it can spawn on top of the character
 		DamageText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform); // So that it can float on top of the character when it dies
-		DamageText->SetDamageText(DamageAmount);
+		DamageText->SetDamageText(DamageAmount, bBlockedHit, bCriticalHit);
 	}
 }
 
