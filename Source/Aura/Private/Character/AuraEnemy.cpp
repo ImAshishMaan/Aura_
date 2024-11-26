@@ -37,6 +37,9 @@ void AAuraEnemy::PossessedBy(AController* NewController) {
 	AuraAIController = Cast<AAuraAIController>(NewController);
 	AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset); // Initialize the blackboard from the behavior tree
 	AuraAIController->RunBehaviorTree(BehaviorTree); // Run the behavior tree
+
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), false); // Set the blackboard value for hit react default
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("RangedAttacker"), CharacterClass != ECharacterClass::Warrior);
 }
 
 void AAuraEnemy::BeginPlay() {
@@ -77,6 +80,8 @@ void AAuraEnemy::BeginPlay() {
 void AAuraEnemy::HitReactTag_Changed(const FGameplayTag CallbackTag, int32 NewCount) {
 	bHitReacting = NewCount > 0;
 	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : BaseWalkSpeed;
+
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bHitReacting); // Set the blackboard value for hit react
 }
 
 void AAuraEnemy::InitAbilityActorInfo() {
