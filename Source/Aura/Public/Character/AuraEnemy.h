@@ -31,6 +31,8 @@ public:
 	//~ Begin ICombatInterface
 	virtual int32 GetPlayerLevel() override;
 	virtual void Die() override;
+	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
+	virtual AActor* GetCombatTarget_Implementation() const override;
 	//~ End ICombatInterface
 
 	UPROPERTY(BlueprintAssignable)
@@ -49,6 +51,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	float LifeSpawn = 5.f;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Combat")
+	TObjectPtr<AActor> CombatTarget; // The actor that the enemy is currently attacking setting from Enemy interface
 	
 protected:
 	virtual void InitAbilityActorInfo() override;

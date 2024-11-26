@@ -33,7 +33,7 @@ AAuraEnemy::AAuraEnemy() {
 void AAuraEnemy::PossessedBy(AController* NewController) {
 	Super::PossessedBy(NewController);
 	if(!HasAuthority()) return; // Only run this on the server and client only listens to the server
-	
+
 	AuraAIController = Cast<AAuraAIController>(NewController);
 	AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset); // Initialize the blackboard from the behavior tree
 	AuraAIController->RunBehaviorTree(BehaviorTree); // Run the behavior tree
@@ -48,7 +48,7 @@ void AAuraEnemy::BeginPlay() {
 	InitAbilityActorInfo();
 
 	if(HasAuthority()) {
-		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent, CharacterClass);
 	} // Give startup abilities to AI like hit react
 
 	if(UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthBar->GetUserWidgetObject())) {
@@ -118,4 +118,12 @@ int32 AAuraEnemy::GetPlayerLevel() {
 void AAuraEnemy::Die() {
 	SetLifeSpan(LifeSpawn);
 	Super::Die();
+}
+
+void AAuraEnemy::SetCombatTarget_Implementation(AActor* InCombatTarget) {
+	CombatTarget = InCombatTarget;
+}
+
+AActor* AAuraEnemy::GetCombatTarget_Implementation() const {
+	return CombatTarget;
 }

@@ -4,6 +4,7 @@
 #include "AuraAbilityTypes.h"
 #include "GameplayEffectTypes.h"
 #include "Aura/Game/AuraGameModeBase.h"
+#include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerState.h"
 #include "UI/HUD/AuraHUD.h"
@@ -57,12 +58,24 @@ void UAuraAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* World
 	ASC->ApplyGameplayEffectSpecToSelf(*VitalAttributesSpecHandle.Data.Get());
 }
 
-void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC) {
+// Gives the common abilities to the Player and Enemies
+void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC, ECharacterClass CharacterClass) {
 	UCharacterClassInfo* CharacterClassInfo = GetCharacterClassInfo(WorldContextObject);
+	if(CharacterClassInfo == nullptr) return; // Check if the character class info is valid
 
+	// these dont change over level
 	for(TSubclassOf<UGameplayAbility> AbilityClass: CharacterClassInfo->CommonAbilities) {
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
 		ASC->GiveAbility(AbilitySpec);
+	}
+
+	// these can change over level i.e. enemy melee damage
+	const FCharacterClassDefaultInfo& DefaultInfo = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
+	for(TSubclassOf<UGameplayAbility> AbilityClass: DefaultInfo.StartupAbilities) {
+		if(ICombatInterface* CombatInterface = Cast<ICombatInterface>(ASC->GetAvatarActor())) {
+			FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, CombatInterface->GetPlayerLevel());
+			ASC->GiveAbility(AbilitySpec);
+		}
 	}
 }
 
