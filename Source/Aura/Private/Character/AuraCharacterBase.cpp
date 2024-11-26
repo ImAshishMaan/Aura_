@@ -4,6 +4,7 @@
 #include "Aura/Aura.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "UObject/FastReferenceCollector.h"
 
 AAuraCharacterBase::AAuraCharacterBase() {
@@ -51,9 +52,7 @@ void AAuraCharacterBase::BeginPlay() {
 	Super::BeginPlay();
 }
 
-FVector AAuraCharacterBase::GetCombatSocketLocation() {
-	ICombatInterface::GetCombatSocketLocation();
-
+FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation() {
 	check(Weapon);
 	return Weapon->GetSocketLocation(WeaponTipSocketName);
 }
