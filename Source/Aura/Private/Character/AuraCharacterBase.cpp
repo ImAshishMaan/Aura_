@@ -43,9 +43,11 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation() {
 	GetMesh()->SetEnableGravity(true);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
-	
+
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Dissolve();
+
+	bDead = true;
 }
 
 void AAuraCharacterBase::BeginPlay() {
@@ -55,6 +57,14 @@ void AAuraCharacterBase::BeginPlay() {
 FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation() {
 	check(Weapon);
 	return Weapon->GetSocketLocation(WeaponTipSocketName);
+}
+
+bool AAuraCharacterBase::IsDead_Implementation() const {
+	return bDead;
+}
+
+AActor* AAuraCharacterBase::GetAvatar_Implementation() {
+	return this;
 }
 
 void AAuraCharacterBase::InitAbilityActorInfo() {}
@@ -81,7 +91,7 @@ void AAuraCharacterBase::AddCharacterAbilities() const {
 	AuraASC->AddCharacterAbilities(StartupAbilities);
 }
 
- void AAuraCharacterBase::Dissolve() {
+void AAuraCharacterBase::Dissolve() {
 	if(IsValid(DissolveMaterialInstance)) {
 		UMaterialInstanceDynamic* DynamicMaterialInstance = UMaterialInstanceDynamic::Create(DissolveMaterialInstance, this);
 		GetMesh()->SetMaterial(0, DynamicMaterialInstance);
@@ -91,9 +101,8 @@ void AAuraCharacterBase::AddCharacterAbilities() const {
 		if(IsValid(WeaponDissolveMaterialInstance)) {
 			UMaterialInstanceDynamic* WeaponDynamicMaterialInstance = UMaterialInstanceDynamic::Create(WeaponDissolveMaterialInstance, this);
 			Weapon->SetMaterial(0, WeaponDynamicMaterialInstance);
-			
+
 			StartWeaponDissolveTimeline(WeaponDynamicMaterialInstance);
 		}
 	}
 }
-
