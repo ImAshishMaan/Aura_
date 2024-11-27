@@ -18,7 +18,7 @@ AAuraCharacterBase::AAuraCharacterBase() {
 	GetMesh()->SetGenerateOverlapEvents(true);
 
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
-	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
+	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket")); // WeaponHandSocket is a socket on the mesh that the weapon is attached to
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
