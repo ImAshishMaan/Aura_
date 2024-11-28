@@ -31,7 +31,7 @@ protected:
 private:
 	UPROPERTY(EditDefaultsOnly)
 	float LifeSpan = 15.f;
-	bool bHit = false;
+	bool bHit = false;  // prevent effect to play twice
 	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> Sphere;
