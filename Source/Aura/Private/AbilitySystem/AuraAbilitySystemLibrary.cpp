@@ -74,8 +74,8 @@ void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContext
 	// these can change over level i.e. enemy melee damage
 	const FCharacterClassDefaultInfo& DefaultInfo = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
 	for(TSubclassOf<UGameplayAbility> AbilityClass: DefaultInfo.StartupAbilities) {
-		if(ICombatInterface* CombatInterface = Cast<ICombatInterface>(ASC->GetAvatarActor())) {
-			FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, CombatInterface->GetPlayerLevel());
+		if(ASC->GetAvatarActor()->Implements<UCombatInterface>()) {
+			FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, ICombatInterface::Execute_GetPlayerLevel(ASC->GetAvatarActor()));
 			ASC->GiveAbility(AbilitySpec);
 		}
 	}
