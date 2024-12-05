@@ -2,12 +2,28 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/Data/LevelUpInfo.h"
+#include "NiagaraComponent.h"
+#include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
 #include "UI/HUD/AuraHUD.h"
 
 AAuraCharacter::AAuraCharacter() {
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>("CameraBoom");
+	CameraBoom->SetupAttachment(GetRootComponent());
+	CameraBoom->SetUsingAbsoluteRotation(true);
+	CameraBoom->bDoCollisionTest = false;
+	
+	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>("TopDownCameraComponent");
+	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	TopDownCameraComponent->bUsePawnControlRotation = false;
+
+	LevelUpNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>("LevelUpNiagaraComponent");
+	LevelUpNiagaraComponent->SetupAttachment(GetRootComponent());
+	LevelUpNiagaraComponent->bAutoActivate = false; // No need to activate automatically
+
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 0.f, 400.f);
 	GetCharacterMovement()->bConstrainToPlane = true;
@@ -47,7 +63,22 @@ void AAuraCharacter::AddToXP_Implementation(int32 InXP) {
 	AuraPlayerState->AddToXP(InXP);
 }
 
-void AAuraCharacter::LevelUp_Implementation() {}
+// its getting called on server.
+void AAuraCharacter::LevelUp_Implementation() {
+	MulticastLevelUpParticles();
+}
+
+// its getting called on server so we need to multicast so it gets called on the client 
+void AAuraCharacter::MulticastLevelUpParticles_Implementation() const {
+	if(IsValid(LevelUpNiagaraComponent)) {
+		const FVector CameraLocation = TopDownCameraComponent->GetComponentLocation();
+		const FVector NiagaraSystemLocation = LevelUpNiagaraComponent->GetComponentLocation();
+		const FRotator ToCameraRotation = (CameraLocation - NiagaraSystemLocation).Rotation();
+		
+		LevelUpNiagaraComponent->SetWorldRotation(ToCameraRotation); // rotate niagara component to camera rotation so animation look good 
+		LevelUpNiagaraComponent->Activate(true);
+	}
+}
 
 int32 AAuraCharacter::GetXP_Implementation() const {
 	const AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
@@ -105,3 +136,4 @@ void AAuraCharacter::InitAbilityActorInfo() {
 
 	InitializeDefaultAttributes();
 }
+
