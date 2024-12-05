@@ -3,6 +3,8 @@
 #include "CoreMinimal.h"
 #include "AuraWidgetController.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStatChangedSignature, int32, NewValue);
+
 class APlayerState;
 class UAttributeSet;
 class UAbilitySystemComponent;
