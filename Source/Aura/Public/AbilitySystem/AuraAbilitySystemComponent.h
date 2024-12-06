@@ -28,6 +28,11 @@ public:
 	void ForEachAbility(const FForEachAbility& Delegate);
 	static FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec); // return ability tag for a given ability spec
 	static FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec); // return input tag for a given ability spec
+
+	void UpgradeAttribute(const FGameplayTag& AttributeTag);
+	
+	UFUNCTION(Server, Reliable)
+	void ServerUpgradeAttribute(const FGameplayTag& AttributeTag);
 protected:
 
 	virtual void OnRep_ActivateAbilities() override;
