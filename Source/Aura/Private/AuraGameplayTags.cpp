@@ -148,7 +148,7 @@ void FAuraGameplayTags::InitializedNativeGameplayTags() {
 		FName("Attributes.Meta.IncomingXP"),
 		FString("Incoming XP Meta Attribute")
 	);
-	
+
 	/*
 	 * Map of Damage Types to Resistances
 	 */
@@ -227,5 +227,14 @@ void FAuraGameplayTags::InitializedNativeGameplayTags() {
 	GameplayTags.Montage_Attack_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Montage.Attack.4"),
 		FString("Attack 4")
+	);
+	GameplayTags.InputTag_Passive_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("InputTag.Passive.1"),
+		FString("Input Tag Passive Ability 1")
+	);
+
+	GameplayTags.InputTag_Passive_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("InputTag.Passive.2"),
+		FString("Input Tag Passive Ability 2")
 	);
 }
