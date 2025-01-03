@@ -28,6 +28,7 @@ public:
 	void ForEachAbility(const FForEachAbility& Delegate);
 	static FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec); // return ability tag for a given ability spec
 	static FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec); // return input tag for a given ability spec
+	static FGameplayTag GetStatusFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 
 	void UpgradeAttribute(const FGameplayTag& AttributeTag);
 	
