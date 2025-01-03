@@ -15,7 +15,7 @@ AAuraCharacter::AAuraCharacter() {
 	CameraBoom->SetupAttachment(GetRootComponent());
 	CameraBoom->SetUsingAbsoluteRotation(true);
 	CameraBoom->bDoCollisionTest = false;
-	
+
 	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>("TopDownCameraComponent");
 	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	TopDownCameraComponent->bUsePawnControlRotation = false;
@@ -74,7 +74,7 @@ void AAuraCharacter::MulticastLevelUpParticles_Implementation() const {
 		const FVector CameraLocation = TopDownCameraComponent->GetComponentLocation();
 		const FVector NiagaraSystemLocation = LevelUpNiagaraComponent->GetComponentLocation();
 		const FRotator ToCameraRotation = (CameraLocation - NiagaraSystemLocation).Rotation();
-		
+
 		LevelUpNiagaraComponent->SetWorldRotation(ToCameraRotation); // rotate niagara component to camera rotation so animation look good 
 		LevelUpNiagaraComponent->Activate(true);
 	}
@@ -108,6 +108,10 @@ void AAuraCharacter::AddToPlayerLevel_Implementation(int32 InPlayerLevel) {
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	check(AuraPlayerState);
 	AuraPlayerState->AddToLevel(InPlayerLevel);
+
+	if(UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetAbilitySystemComponent())) {
+		AuraASC->UpdateAbilityStatuses(AuraPlayerState->GetPlayerLevel());
+	}
 }
 
 void AAuraCharacter::AddToAttributePoints_Implementation(int32 InAttributePoints) {
@@ -152,4 +156,3 @@ void AAuraCharacter::InitAbilityActorInfo() {
 
 	InitializeDefaultAttributes();
 }
-
