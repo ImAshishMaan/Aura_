@@ -11,7 +11,7 @@ void USpellMenuWidgetController::BroadcastInitialValues() {
 }
 
 void USpellMenuWidgetController::BindCallbacksToDependencies() {
-	GetAuraASC()->AbilityStatusChanged.AddLambda([this](const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag) {
+	GetAuraASC()->AbilityStatusChanged.AddLambda([this](const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, int32 NewLevel) {
 		// update selected ability struct and broadcast buttons state doing this because button only update when we click on ability in UI so update the ui even if menu is already open
 		if(SelectedAbility.Ability.MatchesTagExact(AbilityTag)) {
 			SelectedAbility.Status = StatusTag;
@@ -66,6 +66,12 @@ void USpellMenuWidgetController::SpellGlobeSelected(const FGameplayTag& AbilityT
 	bool bEnableEquip = false;
 	ShouldEnableButtons(AbilityStatus, SpellPoints, bEnableSpendPoints, bEnableEquip); // Check if buttons should be enabled based on ability status and spell points and set them b4 broadcasting
 	SpellGlobeSelectedDelegate.Broadcast(bEnableSpendPoints, bEnableEquip); // Broadcast buttons state 
+}
+
+void USpellMenuWidgetController::SpendPointButtonPressed() {
+	if(GetAuraASC()) {
+		GetAuraASC()->ServerSpendSpellPoint(SelectedAbility.Ability);
+	}
 }
 
 void USpellMenuWidgetController::ShouldEnableButtons(const FGameplayTag& AbilityStatus, int32 SpellPoints, bool& bShouldEnableSpellPointsButton, bool& bShouldEnableEquipButton) {

@@ -87,16 +87,36 @@ void UAuraAbilitySystemComponent::UpdateAbilityStatuses(int32 Level) {
 	UAbilityInfo* AbilityInfo = UAuraAbilitySystemLibrary::GetAbilityInfo(GetAvatarActor());
 	for(const FAuraAbilityInfo& Info: AbilityInfo->AbilityInformation) {
 		if(!Info.AbilityTag.IsValid()) continue;
-		
+
 		if(Level < Info.LevelRequirement) continue;
-		
+
 		if(GetSpecFromAbilityTag(Info.AbilityTag) == nullptr) {
 			FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Info.Ability, 1);
 			AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_Status_Eligible);
 			GiveAbility(AbilitySpec);
 			MarkAbilitySpecDirty(AbilitySpec); // mark ability spec as dirty to send to server right away
-			ClientUpdateAbilityStatus(Info.AbilityTag, FAuraGameplayTags::Get().Abilities_Status_Eligible); // To update the UI
+			ClientUpdateAbilityStatus(Info.AbilityTag, FAuraGameplayTags::Get().Abilities_Status_Eligible, 1); // To update the UI
 		}
+	}
+}
+
+void UAuraAbilitySystemComponent::ServerSpendSpellPoint_Implementation(const FGameplayTag& AbilityTag) {
+	if(FGameplayAbilitySpec* AbilitySpec = GetSpecFromAbilityTag(AbilityTag)) {
+		if(GetAvatarActor()->Implements<UPlayerInterface>()) {
+			IPlayerInterface::Execute_AddToSpellPoints(GetAvatarActor(), -1);
+		}
+
+		const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+		FGameplayTag Status = GetStatusFromSpec(*AbilitySpec);
+		if(Status.MatchesTagExact(GameplayTags.Abilities_Status_Eligible)) {
+			AbilitySpec->DynamicAbilityTags.RemoveTag(GameplayTags.Abilities_Status_Eligible); // remove the eligible tag
+			AbilitySpec->DynamicAbilityTags.AddTag(GameplayTags.Abilities_Status_Unlocked); // add the unlocked tag
+			Status = GameplayTags.Abilities_Status_Unlocked;
+		} else if(Status.MatchesTagExact(GameplayTags.Abilities_Status_Equipped) || Status.MatchesTagExact(GameplayTags.Abilities_Status_Unlocked)) {
+			AbilitySpec->Level += 1;
+		}
+		ClientUpdateAbilityStatus(AbilityTag, Status, AbilitySpec->Level);
+		MarkAbilitySpecDirty(*AbilitySpec);
 	}
 }
 
@@ -108,10 +128,9 @@ void UAuraAbilitySystemComponent::OnRep_ActivateAbilities() {
 	}
 }
 
-void UAuraAbilitySystemComponent::ClientUpdateAbilityStatus_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag) {
-	AbilityStatusChanged.Broadcast(AbilityTag, StatusTag);
+void UAuraAbilitySystemComponent::ClientUpdateAbilityStatus_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, int32 NewLevel) {
+	AbilityStatusChanged.Broadcast(AbilityTag, StatusTag, NewLevel);
 }
-
 
 void UAuraAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent,
                                                                      const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle) {
