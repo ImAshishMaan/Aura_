@@ -53,9 +53,9 @@ void AAuraProjectile::Destroyed() {
 void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	AActor* SourceAvatarActor = DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor();
 	if(SourceAvatarActor == OtherActor) return; // Ignore self
-	
+
 	if(!UAuraAbilitySystemLibrary::IsNotFriend(SourceAvatarActor, OtherActor)) return; // Ignore friendly fire
-	
+
 	if(!bHit) OnHit();
 
 	if(HasAuthority()) {
@@ -63,7 +63,17 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 			// Set death impulse in damage effect params
 			const FVector DeathImpulse = GetActorForwardVector() * DamageEffectParams.DeathImpulseMagnitude;
 			DamageEffectParams.DeathImpulse = DeathImpulse;
-			
+
+			const bool bKnockback = FMath::RandRange(1, 100) < DamageEffectParams.KnockbackChance;
+			if(bKnockback) {
+				FRotator Rotation = GetActorRotation();
+				Rotation.Pitch = 45.f;
+
+				const FVector KnockbackDirection = Rotation.Vector();
+				const FVector KnockbackForce = KnockbackDirection * DamageEffectParams.KnockbackForeceMagnitude;
+				DamageEffectParams.KnockbackForce = KnockbackForce;
+			}
+
 			DamageEffectParams.TargetAbilitySystemComponent = TargetASC; // Set target ASC for damage effect
 			UAuraAbilitySystemLibrary::ApplyDamageEffect(DamageEffectParams); // Apply damage effect
 		}
