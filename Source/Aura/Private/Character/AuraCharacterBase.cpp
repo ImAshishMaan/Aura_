@@ -125,6 +125,10 @@ FOnASCRegistered AAuraCharacterBase::GetOnASCRegisteredDelegate() {
 	return OnAscRegistered;
 }
 
+USkeletalMeshComponent* AAuraCharacterBase::GetWeapon_Implementation() {
+	return Weapon;
+}
+
 void AAuraCharacterBase::InitAbilityActorInfo() {}
 
 void AAuraCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const {

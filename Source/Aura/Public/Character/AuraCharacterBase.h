@@ -38,6 +38,7 @@ public:
 	virtual void IncrementMinionCount_Implementation(int32 Amount) override; // Increment Minion Count in GA
 	virtual ECharacterClass GetCharacterClass_Implementation() override;
 	virtual FOnASCRegistered GetOnASCRegisteredDelegate() override;
+	virtual USkeletalMeshComponent* GetWeapon_Implementation() override;
 	/** end Combat Interface */
 
 	FOnASCRegistered OnAscRegistered;
