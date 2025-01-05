@@ -1,5 +1,6 @@
 #include "AbilitySystem/AbilityTasks/TargetDataUnderMouse.h"
 #include "AbilitySystemComponent.h"
+#include "Aura/Aura.h"
 
 // Creating a instance like this so we can bind this instance to a specific ability task
 UTargetDataUnderMouse* UTargetDataUnderMouse::CreateTargetDataUnderMouse(UGameplayAbility* OwningAbility) {
@@ -39,7 +40,7 @@ void UTargetDataUnderMouse::SendMouseCursorData() {
 	// Retrieve the player controller and perform a hit test under the mouse cursor
 	APlayerController* PC = Ability->GetCurrentActorInfo()->PlayerController.Get();
 	FHitResult CursorHit;
-	PC->GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
+	PC->GetHitResultUnderCursor(ECC_Target, false, CursorHit);
 
 	// Create target data from the hit result
 	FGameplayAbilityTargetDataHandle DataHandle;
