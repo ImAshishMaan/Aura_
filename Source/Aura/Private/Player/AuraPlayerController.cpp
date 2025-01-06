@@ -8,6 +8,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Actor/MagicCircle.h"
+#include "Components/DecalComponent.h"
 #include "Components/SplineComponent.h"
 #include "Engine/HitResult.h"
 #include "Engine/LocalPlayer.h"
@@ -32,11 +33,15 @@ void AAuraPlayerController::PlayerTick(float DeltaTime) {
 	UpdateMagicCircleLocation();
 }
 
-void AAuraPlayerController::ShowMagicCircle() {
+void AAuraPlayerController::ShowMagicCircle(UMaterialInterface* DecalMaterial) {
 	if(MagicCircleClass && !IsValid(MagicCircle)) {
 		MagicCircle = GetWorld()->SpawnActor<AMagicCircle>(MagicCircleClass);
+		if(DecalMaterial) {
+			MagicCircle->MagicCircleDecal->SetMaterial(0, DecalMaterial);
+		}
 	}
 }
+
 void AAuraPlayerController::HideMagicCircle() {
 	if(IsValid(MagicCircle)) {
 		MagicCircle->Destroy();
@@ -115,7 +120,7 @@ void AAuraPlayerController::CursorTrace() {
 		ThisActor = nullptr;
 		return;
 	}
-	
+
 	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
 	if(!CursorHit.bBlockingHit) return;
 	LastActor = ThisActor;
@@ -211,5 +216,3 @@ void AAuraPlayerController::AutoRun() {
 		}
 	}
 }
-
-
