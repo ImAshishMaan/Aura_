@@ -10,6 +10,7 @@ class UAbilitySystemComponent;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnASCRegistered, UAbilitySystemComponent*)
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeathSignature, AActor* , DeadActor);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnDamageSignature, float /*DamageAmount*/);
 
 USTRUCT(BlueprintType)
 struct FTaggedMontage {
@@ -57,6 +58,7 @@ public:
 	virtual void Die(const FVector& DeathImpulse) = 0;
 
 	virtual FOnDeathSignature& GetOnDeathDelegate() = 0; // pure virtual function
+	virtual FOnDamageSignature& GetOnDamageSignature() = 0; 
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	bool IsDead() const;
