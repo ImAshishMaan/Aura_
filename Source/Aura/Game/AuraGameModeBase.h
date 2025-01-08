@@ -8,6 +8,7 @@ class UCharacterClassInfo;
 class UAbilityInfo;
 class UMVVM_LoadSlot;
 class USaveGame;
+class ULoadScreenSaveGame;
 /**
  * 
  */
@@ -22,8 +23,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Ability Information")
 	TObjectPtr<UAbilityInfo> AbilityInfo;
 
+	UFUNCTION (BlueprintCallable, Category="SaveGame")  
 	void SaveSlotData(UMVVM_LoadSlot* LoadSlot, int32 SlotIndex);
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<USaveGame> LoadScreenSaveGameClass;
+
+	ULoadScreenSaveGame* GetSaveSlotData(const FString& SlotName, int32 SlotIndex) const;
 };

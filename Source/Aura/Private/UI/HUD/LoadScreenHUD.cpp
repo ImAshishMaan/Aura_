@@ -13,5 +13,5 @@ void ALoadScreenHUD::BeginPlay() {
 	LoadScreenWidget->AddToViewport();
 	LoadScreenWidget->BlueprintInitializeWidget();
 
-	
+	LoadScreenViewModel->LoadData();
 }
