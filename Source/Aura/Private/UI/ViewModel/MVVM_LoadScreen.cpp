@@ -35,7 +35,16 @@ void UMVVM_LoadScreen::NewGameButtonPressed(int32 Slot) {
 	LoadSlots[Slot]->SetWidgetSwitcherIndex.Broadcast(1);
 }
 
-void UMVVM_LoadScreen::SelectSlotButtonPressed(int32 Slot) {}
+void UMVVM_LoadScreen::SelectSlotButtonPressed(int32 Slot) {
+	SlotSelected.Broadcast();
+	for(const TTuple<int32, UMVVM_LoadSlot*> LoadSlot: LoadSlots) {
+		if(LoadSlot.Key == Slot) {
+			LoadSlot.Value->EnableSelectSlotButton.Broadcast(false);
+		} else {
+			LoadSlot.Value->EnableSelectSlotButton.Broadcast(true);
+		}
+	}
+}
 
 void UMVVM_LoadScreen::LoadData() {
 	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this));
