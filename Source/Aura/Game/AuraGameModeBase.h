@@ -19,4 +19,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ability Information")
 	TObjectPtr<UAbilityInfo> AbilityInfo;
+
+	void SaveSlotData(UMVVM_LoadSlot* LoadSlot, int32 SlotIndex);
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<USaveGame> LoadScreenSaveGameClass;
 };

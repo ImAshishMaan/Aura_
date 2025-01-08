@@ -27,4 +27,7 @@ public:
 	
 	UPROPERTY()
 	FString SlotIndex;
+
+private:
+	
 };
