@@ -40,6 +40,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSoftObjectPtr<UWorld> DefaultMap;
+	
+	UPROPERTY(EditDefaultsOnly)
+	FName DefaultPlayerStartTag;
 
 	UPROPERTY(EditDefaultsOnly)
 	TMap<FString, TSoftObjectPtr<UWorld>> Maps; // TSoftObjectPtr<UWorld> is lazy loading

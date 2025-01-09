@@ -1,4 +1,6 @@
 #include "AuraGameModeBase.h"
+
+#include "AuraGameInstance.h"
 #include "LoadScreenSaveGame.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
@@ -40,13 +42,15 @@ void AAuraGameModeBase::DeleteSlot(const FString& SlotName, int32 SlotIndex) {
 }
 
 AActor* AAuraGameModeBase::ChoosePlayerStart_Implementation(AController* Player) {
+	UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(GetGameInstance());
+	
 	TArray<AActor*> Actors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), Actors); // get all player starts
 	if(Actors.Num() > 0) {
 		AActor* SelectedActor = Actors[0];
 		for(AActor* Actor: Actors) {
 			if(APlayerStart* PlayerStart = Cast<APlayerStart>(Actor)) {
-				if(PlayerStart->PlayerStartTag == FName("TheTag")) {
+				if(PlayerStart->PlayerStartTag == AuraGameInstance->PlayerStartTag) {
 					SelectedActor = PlayerStart;
 					break;
 				}
