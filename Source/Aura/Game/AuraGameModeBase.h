@@ -30,4 +30,6 @@ public:
 	TSubclassOf<USaveGame> LoadScreenSaveGameClass;
 
 	ULoadScreenSaveGame* GetSaveSlotData(const FString& SlotName, int32 SlotIndex) const;
+
+	static void DeleteSlot(const FString& SlotName, int32 SlotIndex);
 };

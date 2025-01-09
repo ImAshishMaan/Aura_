@@ -1,5 +1,4 @@
 #include "UI/ViewModel/MVVM_LoadScreen.h"
-
 #include "Aura/Game/AuraGameModeBase.h"
 #include "Aura/Game/LoadScreenSaveGame.h"
 #include "Kismet/GameplayStatics.h"
@@ -8,12 +7,17 @@
 void UMVVM_LoadScreen::InitializeLoadSlots() {
 	LoadSlot_0 = NewObject<UMVVM_LoadSlot>(this, LoadSlotViewModelClass);
 	LoadSlot_0->SetLoadSlotName(FString("LoadSlot_0"));
+	LoadSlot_0->SlotIndex = 0;
 	LoadSlots.Add(0, LoadSlot_0);
+	
 	LoadSlot_1 = NewObject<UMVVM_LoadSlot>(this, LoadSlotViewModelClass);
 	LoadSlot_1->SetLoadSlotName(FString("LoadSlot_1"));
+	LoadSlot_0->SlotIndex = 1;
 	LoadSlots.Add(1, LoadSlot_1);
+	
 	LoadSlot_2 = NewObject<UMVVM_LoadSlot>(this, LoadSlotViewModelClass);
 	LoadSlot_2->SetLoadSlotName(FString("LoadSlot_2"));
+	LoadSlot_0->SlotIndex = 2;
 	LoadSlots.Add(2, LoadSlot_2);
 }
 
@@ -43,6 +47,17 @@ void UMVVM_LoadScreen::SelectSlotButtonPressed(int32 Slot) {
 		} else {
 			LoadSlot.Value->EnableSelectSlotButton.Broadcast(true);
 		}
+	}
+	
+	SelectedSlot = LoadSlots[Slot]; // Setting current selected slot
+}
+
+void UMVVM_LoadScreen::DeleteButtonPressed() {
+	if(IsValid(SelectedSlot)) {
+		AAuraGameModeBase::DeleteSlot(SelectedSlot->GetLoadSlotName(), SelectedSlot->SlotIndex);
+		SelectedSlot->SlotStatus = Vacant;
+		SelectedSlot->InitializeSlot();
+		SelectedSlot->EnableSelectSlotButton.Broadcast(true);
 	}
 }
 
