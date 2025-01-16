@@ -35,6 +35,9 @@ public:
 
 	static void DeleteSlot(const FString& SlotName, int32 SlotIndex);
 
+	ULoadScreenSaveGame* RetrieveInGameSaveData();
+	void SaveInGameProgressData(ULoadScreenSaveGame* SaveObject);
+
 	UPROPERTY(EditDefaultsOnly)
 	FString DefaultMapName;
 

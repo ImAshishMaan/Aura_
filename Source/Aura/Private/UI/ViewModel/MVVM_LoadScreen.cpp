@@ -75,6 +75,8 @@ void UMVVM_LoadScreen::PlayButtonPressed() {
 	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this));
 	UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(AuraGameMode->GetGameInstance());
 	AuraGameInstance->PlayerStartTag = SelectedSlot->PlayerStartTag;
+	AuraGameInstance->LoadSlotName = SelectedSlot->GetLoadSlotName();
+	AuraGameInstance->LoadSlotIndex = SelectedSlot->SlotIndex;
 	
 	if(IsValid(SelectedSlot)) {
 		AuraGameMode->TravelToMap(SelectedSlot);
@@ -91,7 +93,7 @@ void UMVVM_LoadScreen::LoadData() {
 		LoadSlot.Value->SlotStatus = SaveSlotStatus;
 		LoadSlot.Value->SetPlayerName(PlayerName);
 		LoadSlot.Value->InitializeSlot();
-		LoadSlot.Value->PlayerStartTag = SaveObject->PlayerStartName;
+		LoadSlot.Value->PlayerStartTag = SaveObject->PlayerStartTag;
 		LoadSlot.Value->SetMapName(SaveObject->MapName);
 	}
 }
