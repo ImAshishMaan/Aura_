@@ -15,6 +15,36 @@ enum ESaveSlotStatus {
 	Taken
 };
 
+USTRUCT()
+struct FSavedActor {
+	GENERATED_BODY()
+	
+	UPROPERTY()
+	FName ActorName = FName();
+	
+	UPROPERTY()
+	FTransform Transform = FTransform();
+	
+	// Serialized variables from the Actor - only those marked with SaveGame specifier
+	UPROPERTY()
+	TArray<uint8> Bytes;
+};
+
+inline bool operator==(const FSavedActor& Left, const FSavedActor& Right) {
+	return Left.ActorName == Right.ActorName;
+}
+
+USTRUCT()
+struct FSavedMap {
+	GENERATED_BODY()
+	
+	UPROPERTY()
+	FString MapAssetName = FString();
+	
+	UPROPERTY()
+	TArray<FSavedActor> SavedActors;
+};
+
 USTRUCT(BlueprintType)
 struct FSavedAbility {
 	GENERATED_BODY()
@@ -36,7 +66,6 @@ struct FSavedAbility {
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int32 AbilityLevel;
-	
 };
 
 inline bool operator==(const FSavedAbility& Left, const FSavedAbility& Right) {
@@ -65,7 +94,7 @@ public:
 
 	UPROPERTY()
 	FName PlayerStartTag;
-	
+
 	UPROPERTY()
 	TEnumAsByte<ESaveSlotStatus> SaveSlotStatus = Vacant;
 
@@ -73,34 +102,40 @@ public:
 	bool bFirstTimeLoadIn = true;
 
 	/* Player Data */
-	
+
 	UPROPERTY()
 	int32 PlayerLevel = 1;
-	
+
 	UPROPERTY()
 	int32 XP = 0;
-	
+
 	UPROPERTY()
 	int32 SpellPoints = 0;
-	
+
 	UPROPERTY()
 	int32 AttributePoints = 0;
-	
+
 	UPROPERTY()
 	float Strength = 0;
-	
+
 	UPROPERTY()
 	float Intelligence = 0;
-	
+
 	UPROPERTY()
 	float Resilience = 0;
-	
+
 	UPROPERTY()
 	float Vigor = 0;
 
 	// Abilities
-	
+
 	UPROPERTY()
 	TArray<FSavedAbility> SavedAbilities;
+
+	// save actors
+	UPROPERTY()
+	TArray<FSavedMap> SavedMaps;
 	
+	FSavedMap GetSavedMapWithMapName(const FString& InMapName);
+	bool HasMap(const FString& InMapName);
 };
