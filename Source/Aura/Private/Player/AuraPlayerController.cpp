@@ -16,7 +16,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/Pawn.h"
 #include "Input/AuraInputComponent.h"
-#include "Interaction/EnemyInterface.h"
+#include "Interaction/HighlightInterface.h"
 #include "UI/Widget/DamageTextComponent.h"
 
 AAuraPlayerController::AAuraPlayerController() {

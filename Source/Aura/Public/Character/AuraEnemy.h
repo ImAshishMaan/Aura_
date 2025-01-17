@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
 #include "Interaction/EnemyInterface.h"
+#include "Interaction/HighlightInterface.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "AuraEnemy.generated.h"
 
@@ -13,7 +14,7 @@ class UWidgetComponent;
  * 
  */
 UCLASS()
-class AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface {
+class AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface, public IHighlightInterface {
 	GENERATED_BODY()
 
 public:
@@ -22,10 +23,10 @@ public:
 	
 	virtual void BeginPlay() override;
 
-	//~ Begin IEnemyInterface
+	//~ Begin IHighlightInterface
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
-	//~ End IEnemyInterface
+	//~ End IHighlightInterface
 
 	//~ Begin ICombatInterface
 	virtual int32 GetPlayerLevel_Implementation() override;
