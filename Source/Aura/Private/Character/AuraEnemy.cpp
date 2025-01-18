@@ -102,14 +102,14 @@ void AAuraEnemy::InitializeDefaultAttributes() const {
 	UAuraAbilitySystemLibrary::InitializeDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
 }
 
-void AAuraEnemy::HighlightActor() {
+void AAuraEnemy::HighlightActor_Implementation() {
 	GetMesh()->SetRenderCustomDepth(true);
 	GetMesh()->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
 	Weapon->SetRenderCustomDepth(true);
 	Weapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
 }
 
-void AAuraEnemy::UnHighlightActor() {
+void AAuraEnemy::UnHighlightActor_Implementation() {
 	GetMesh()->SetRenderCustomDepth(false);
 	Weapon->SetRenderCustomDepth(false);
 }
