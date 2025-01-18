@@ -55,6 +55,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Combat")
 	TObjectPtr<AActor> CombatTarget; // The actor that the enemy is currently attacking setting from Enemy interface
+
+	void SetLevel(int32 InLevel) { Level = InLevel; }
 	
 protected:
 	virtual void InitAbilityActorInfo() override;
