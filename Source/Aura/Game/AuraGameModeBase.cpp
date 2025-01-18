@@ -68,13 +68,13 @@ void AAuraGameModeBase::SaveInGameProgressData(ULoadScreenSaveGame* SaveObject) 
 void AAuraGameModeBase::LoadWorldState(UWorld* World) const {
 	FString WorldName = World->GetMapName();
 	WorldName.RemoveFromStart(World->StreamingLevelsPrefix);
-	
+
 	UAuraGameInstance* AuraGI = Cast<UAuraGameInstance>(GetGameInstance());
 	check(AuraGI);
-	
+
 	if(UGameplayStatics::DoesSaveGameExist(AuraGI->LoadSlotName, AuraGI->LoadSlotIndex)) {
 		ULoadScreenSaveGame* SaveGame = Cast<ULoadScreenSaveGame>(UGameplayStatics::LoadGameFromSlot(AuraGI->LoadSlotName, AuraGI->LoadSlotIndex));
-		
+
 		if(SaveGame == nullptr) {
 			UE_LOG(LogAura, Error, TEXT("Failed to load slot"));
 			return;
@@ -84,21 +84,21 @@ void AAuraGameModeBase::LoadWorldState(UWorld* World) const {
 		// Can be optimized if we make an array of all actors that need to be saved and load
 		for(FActorIterator It(World); It; ++It) {
 			AActor* Actor = *It;
-			
+
 			if(!Actor->Implements<USaveInterface>()) continue;
-			
+
 			for(FSavedActor SavedActor: SaveGame->GetSavedMapWithMapName(WorldName).SavedActors) {
 				if(SavedActor.ActorName == Actor->GetFName()) {
 					if(ISaveInterface::Execute_ShouldLoadTransform(Actor)) {
 						Actor->SetActorTransform(SavedActor.Transform);
 					}
-					
+
 					FMemoryReader MemoryReader(SavedActor.Bytes);
 					FObjectAndNameAsStringProxyArchive Archive(MemoryReader, true);
 					Archive.ArIsSaveGame = true;
-					
+
 					Actor->Serialize(Archive); // converts binary bytes back into variables
-					
+
 					ISaveInterface::Execute_LoadActor(Actor);
 				}
 			}
@@ -106,7 +106,7 @@ void AAuraGameModeBase::LoadWorldState(UWorld* World) const {
 	}
 }
 
-void AAuraGameModeBase::SaveWorldState(UWorld* World) const {
+void AAuraGameModeBase::SaveWorldState(UWorld* World, const FString& DestinationMapAssetName) const {
 	FString WorldName = World->GetMapName();
 	WorldName.RemoveFromStart(World->StreamingLevelsPrefix);
 
@@ -114,6 +114,11 @@ void AAuraGameModeBase::SaveWorldState(UWorld* World) const {
 	check(AuraGI);
 
 	if(ULoadScreenSaveGame* SaveGame = GetSaveSlotData(AuraGI->LoadSlotName, AuraGI->LoadSlotIndex)) {
+		if(DestinationMapAssetName != FString("")) { // if we have a destination map name (basically next map)
+			SaveGame->MapAssetName = DestinationMapAssetName;
+			SaveGame->MapName = GetMapNameFromMapAssetName(DestinationMapAssetName);
+		}
+
 		// Add the world if it doesn't exist
 		if(!SaveGame->HasMap(WorldName)) {
 			FSavedMap NewSavedMap;
@@ -151,6 +156,15 @@ void AAuraGameModeBase::SaveWorldState(UWorld* World) const {
 
 		UGameplayStatics::SaveGameToSlot(SaveGame, AuraGI->LoadSlotName, AuraGI->LoadSlotIndex);
 	}
+}
+
+FString AAuraGameModeBase::GetMapNameFromMapAssetName(const FString& MapAssetName) const {
+	for(auto& Map: Maps) {
+		if(Map.Value.ToSoftObjectPath().GetAssetName() == MapAssetName) {
+			return Map.Key;
+		}
+	}
+	return FString();
 }
 
 AActor* AAuraGameModeBase::ChoosePlayerStart_Implementation(AController* Player) {
