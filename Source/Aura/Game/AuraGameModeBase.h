@@ -9,6 +9,8 @@ class UAbilityInfo;
 class UMVVM_LoadSlot;
 class USaveGame;
 class ULoadScreenSaveGame;
+class ULootTiers;
+
 /**
  * 
  */
@@ -22,6 +24,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ability Information")
 	TObjectPtr<UAbilityInfo> AbilityInfo;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Loot Tiers")
+	TObjectPtr<ULootTiers> LootTiers;
 
 	UFUNCTION (BlueprintCallable, Category="SaveGame")  
 	void SaveSlotData(UMVVM_LoadSlot* LoadSlot, int32 SlotIndex);

@@ -129,7 +129,8 @@ int32 AAuraEnemy::GetPlayerLevel_Implementation() {
 void AAuraEnemy::Die(const FVector& DeathImpulse) {
 	SetLifeSpan(LifeSpawn);
 	if (AuraAIController) AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), true); // Set the blackboard value for dead
-	
+
+	SpawnLoot();
 	Super::Die(DeathImpulse);
 }
 
